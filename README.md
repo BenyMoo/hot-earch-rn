@@ -3,6 +3,14 @@
 全网热搜聚合平台，支持多平台热搜榜单查看与订阅管理。本项目开源免费，禁止商用。
 
 ## 提交代码使用dev开发分支。
+## 生成方式keytool
+Keytool 是 Java JDK 中包含的命令行工具。
+
+要生成密钥存储，请执行下面的命令，“更改”和“使其与你的应用相关。工具会要求你输入一个密钥存储密码和一个密钥密码。请注意这些数值，因为添加你的凭证到Appflow时你会需要它们。MY-RELEASE-KEYMY_ALIAS_NAME
+
+``` bash
+$ keytool -genkey -v -keystore MY-RELEASE-KEY.keystore -alias MY_ALIAS_NAME -keyalg RSA -keysize 2048 -validity 10000 -storetype jks
+```
 
 ## 开发环境运行
 
