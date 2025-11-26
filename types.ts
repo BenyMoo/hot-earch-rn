@@ -3,7 +3,7 @@ export interface HotItem {
   title: string;
   url: string;
   mobil_url: string;
-  hot: string; // Sometimes empty or a number string
+  hot: string; // 有时为空字符串或热度数值
   update_v?: string;
   type?: string;
 }

@@ -6,7 +6,7 @@ import HotItemCard from './components/HotItemCard';
 import { SkeletonLoader } from './components/SkeletonLoader';
 import { RefreshCw, Search, Github, MessageCircle, SlidersHorizontal, X, Plus, Minus, ArrowUp, ArrowDown } from 'lucide-react';
 
-// --- Constants & Config ---
+// --- 常量与配置 ---
 
 const LOGO_URL = "https://image-zs.oss-cn-beijing.aliyuncs.com/zs-health/image/1764143818814logo.jpg";
 
@@ -19,9 +19,9 @@ const DEFAULT_PRIORITY_LIST = [
   "抖音"
 ];
 
-// --- Sub-components ---
+// --- 子组件 ---
 
-// Footer component
+// 底部信息组件
 const FooterInfo = () => (
   <div className="text-xs text-slate-400 space-y-2 mt-auto pt-6 border-t border-slate-100">
       <p className="font-medium text-slate-500">易悦网络旗下产品</p>
@@ -43,7 +43,7 @@ const FooterInfo = () => (
   </div>
 );
 
-// Logo Component
+// Logo 组件
 const AppLogo = () => (
   <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-sm shrink-0 bg-slate-100">
     <img 
@@ -51,7 +51,7 @@ const AppLogo = () => (
         alt="易热搜 Logo" 
         className="w-full h-full object-cover"
         onError={(e) => {
-            // Fallback if image fails
+            // 图片加载失败时的兜底
             e.currentTarget.style.display = 'none';
             e.currentTarget.parentElement?.classList.add('bg-gradient-to-br', 'from-blue-500', 'to-orange-400', 'flex', 'items-center', 'justify-center', 'text-white', 'font-bold', 'text-lg');
             if(e.currentTarget.parentElement) e.currentTarget.parentElement.innerText = 'Ue.';
@@ -60,7 +60,7 @@ const AppLogo = () => (
   </div>
 );
 
-// Modal Component for Managing Subscriptions
+// 订阅管理模态框组件
 interface SubscriptionManagerProps {
     isOpen: boolean;
     onClose: () => void;
@@ -115,7 +115,7 @@ const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({
                 </div>
                 
                 <div className="flex-1 overflow-y-auto p-4 space-y-6">
-                    {/* Active Subscriptions */}
+                    {/* 已订阅列表 */}
                     <div>
                         <h4 className="text-sm font-semibold text-slate-500 mb-3 flex items-center gap-2">
                             <span>我的订阅</span>
@@ -159,7 +159,7 @@ const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({
                          <p className="text-xs text-slate-400 mt-2 text-center">可拖动排序 (暂仅支持按钮排序)</p>
                     </div>
 
-                    {/* Hidden/Available Platforms */}
+                    {/* 未订阅/可用平台 */}
                     {hiddenNames.length > 0 && (
                         <div>
                              <h4 className="text-sm font-semibold text-slate-500 mb-3 flex items-center gap-2">
@@ -188,17 +188,17 @@ const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({
     );
 };
 
-// --- Main App Component ---
+// --- 主应用组件 ---
 
 const App: React.FC = () => {
-  // Raw data from API
+  // API 原始数据
   const [allData, setAllData] = useState<PlatformData[]>([]);
   
-  // User Preferences
+  // 用户偏好设置
   const [customOrder, setCustomOrder] = useState<string[]>([]);
   const [hiddenPlatforms, setHiddenPlatforms] = useState<string[]>([]);
   
-  // UI State
+  // UI 状态
   const [selectedPlatform, setSelectedPlatform] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -206,7 +206,7 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isManagerOpen, setIsManagerOpen] = useState(false);
 
-  // Load preferences from local storage on mount
+  // 组件挂载时从本地存储加载配置
   useEffect(() => {
     const savedOrder = localStorage.getItem('hotSearch_order');
     const savedHidden = localStorage.getItem('hotSearch_hidden');
@@ -223,7 +223,7 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // Save preferences whenever they change
+  // 配置变更时保存到本地
   useEffect(() => {
      if (customOrder.length > 0) localStorage.setItem('hotSearch_order', JSON.stringify(customOrder));
   }, [customOrder]);
@@ -235,12 +235,12 @@ const App: React.FC = () => {
   const cleanData = (rawData: PlatformData[]) => {
       return rawData
         .filter(item => {
-            // Filter: Remove 微博 (Weibo) if subtitle is 要闻 (Important News)
+            // 过滤：如果副标题是“要闻”，则移除微博
             if (item.name === '微博' && item.subtitle === '要闻') return false;
             return true;
         })
         .map(item => {
-            // Rename: woShiPm -> 人人都是产品经理
+            // 重命名：woShiPm -> 人人都是产品经理
             if (item.name.toLowerCase() === 'woshipm') {
                 return { ...item, name: '人人都是产品经理' };
             }
@@ -262,18 +262,18 @@ const App: React.FC = () => {
         
         setAllData(processedData);
 
-        // Initialize sorting/hiding logic if not already set (First load ever)
+        // 初始化排序/隐藏逻辑（首次加载）
         if (customOrder.length === 0 && hiddenPlatforms.length === 0) {
-            // Create initial sort based on priority list
+            // 基于优先级列表创建初始排序
             const initialOrder: string[] = [];
             const remaining: string[] = [];
 
-            // Add priority items first if they exist in data
+            // 优先添加在数据中存在的优先级项目
             DEFAULT_PRIORITY_LIST.forEach(pName => {
                 if (allNames.includes(pName)) initialOrder.push(pName);
             });
 
-            // Add rest
+            // 添加剩余项目
             allNames.forEach(name => {
                 if (!initialOrder.includes(name)) remaining.push(name);
             });
@@ -281,15 +281,15 @@ const App: React.FC = () => {
             const fullOrder = [...initialOrder, ...remaining];
             setCustomOrder(fullOrder);
             
-            // Set first platform selected
+            // 设置默认选中的平台
             if (!selectedPlatform) setSelectedPlatform(fullOrder[0]);
         } else {
-            // Handle case where API has new platforms not in our saved lists
+            // 处理 API 新增平台的情况
             const knownNames = new Set([...customOrder, ...hiddenPlatforms]);
             const newNames = allNames.filter(n => !knownNames.has(n));
             
             if (newNames.length > 0) {
-                // Append new platforms to customOrder by default so user sees them
+                // 默认将新平台追加到自定义顺序中，以便用户看到
                 setCustomOrder(prev => [...prev, ...newNames]);
             }
         }
@@ -309,23 +309,23 @@ const App: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Compute final display list
+  // 计算最终显示的列表
   const displayPlatforms = useMemo(() => {
       if (allData.length === 0) return [];
       
-      // Filter out hidden
+      // 过滤掉隐藏的平台
       const visible = customOrder.filter(name => !hiddenPlatforms.includes(name));
       
-      // Map names to data objects
+      // 将名称映射为数据对象
       return visible
           .map(name => allData.find(p => p.name === name))
           .filter((p): p is PlatformData => p !== undefined);
   }, [allData, customOrder, hiddenPlatforms]);
 
-  // Ensure selected platform is valid
+  // 确保当前选中的平台有效
   useEffect(() => {
       if (!loading && displayPlatforms.length > 0) {
-          // If currently selected is hidden or invalid, switch to first visible
+          // 如果当前选中的被隐藏或无效，切换到第一个可见的平台
           if (!selectedPlatform || !displayPlatforms.find(p => p.name === selectedPlatform)) {
               setSelectedPlatform(displayPlatforms[0].name);
           }
@@ -349,37 +349,21 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-col md:flex-row h-screen w-full bg-[#f8fafc] overflow-hidden">
       
-      {/* Subscription Manager Modal */}
+      {/* 订阅管理模态框 */}
       <SubscriptionManager 
         isOpen={isManagerOpen}
         onClose={() => setIsManagerOpen(false)}
         allPlatformNames={allData.map(d => d.name)}
         visibleNames={customOrder.filter(n => !hiddenPlatforms.includes(n))}
         setVisibleNames={(newVisible) => {
-             // Reconstruct full customOrder: newVisible + (existing hidden in customOrder)
-             // We need to keep the hidden items in customOrder to maintain their relative positions or just append?
-             // Simplest: CustomOrder is THE Order. 
-             // Logic: We receive the new visible order. We update CustomOrder to match this new visible order + existing hidden items.
-             // Actually, SubscriptionManager passes us back the modified visible list (reordered).
-             // We also have setHiddenNames.
-             
-             // To simplify: we construct a new customOrder that puts the visible items first (in their new order), followed by hidden items?
-             // No, let's just keep customOrder as the master list of everything.
-             // But if we hide something, it's just in hiddenPlatforms. 
-             
-             // Wait, the Manager component handles "Move Up/Down" on the visible list.
-             // So `newVisible` is the new desired order of visible items.
-             // We should update `customOrder` to reflect this.
-             // Strategy: Remove all `newVisible` items from `customOrder`, then splice them back in? 
-             // Simpler: `customOrder` = `newVisible` + `hiddenPlatforms`. 
-             // This effectively moves hidden items to the end of the master sort list, which is fine.
+             // 逻辑：将新排序的可见列表 + 现有的隐藏列表合并，作为新的自定义顺序
              setCustomOrder([...newVisible, ...hiddenPlatforms]);
         }}
         hiddenNames={hiddenPlatforms}
         setHiddenNames={setHiddenPlatforms}
       />
 
-      {/* --- Desktop Sidebar --- */}
+      {/* --- 桌面端侧边栏 --- */}
       <aside className="hidden md:flex flex-col w-72 bg-white border-r border-slate-200 h-full z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
         <div className="p-6 border-b border-slate-100 flex items-center gap-3">
             <AppLogo />
@@ -414,24 +398,24 @@ const App: React.FC = () => {
                 </div>
             )}
             
-            {/* Desktop Footer Info */}
+            {/* 桌面端底部信息 */}
             <FooterInfo />
         </div>
       </aside>
 
-      {/* --- Main Content Area --- */}
+      {/* --- 主内容区域 --- */}
       <main className="flex-1 flex flex-col h-full relative w-full max-w-5xl mx-auto md:max-w-none bg-[#f8fafc]">
         
-        {/* Header */}
+        {/* 顶部栏 */}
         <header className="glass-effect sticky top-0 z-10 border-b border-slate-200 md:border-none px-4 py-3 md:px-8 md:py-5 flex flex-col gap-3">
            <div className="flex items-center justify-between">
-              {/* Mobile Brand */}
+              {/* 移动端品牌标识 */}
               <div className="flex items-center gap-3 md:hidden">
                  <div className="scale-90 origin-left"><AppLogo /></div>
                  <h1 className="text-lg font-bold text-slate-900">易热搜</h1>
               </div>
 
-              {/* Desktop Title */}
+              {/* 桌面端标题 */}
               <div className="hidden md:block">
                   <h2 className="text-2xl font-bold text-slate-800 flex items-baseline gap-3">
                       {activePlatformData?.name || '加载中...'}
@@ -465,7 +449,7 @@ const App: React.FC = () => {
               </div>
            </div>
 
-           {/* Mobile Platform Selector (Horizontal Scroll) */}
+           {/* 移动端平台选择器（横向滚动） */}
            <div className="md:hidden -mx-4 border-b border-slate-100 bg-white/50 backdrop-blur-sm">
              {loading && allData.length === 0 ? (
                  <div className="flex gap-2 p-3 overflow-hidden">
@@ -480,7 +464,7 @@ const App: React.FC = () => {
              )}
            </div>
 
-           {/* Search Bar */}
+           {/* 搜索栏 */}
            <div className="relative group w-full max-w-lg mt-1">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                     <Search size={16} className="text-slate-400 group-focus-within:text-blue-500 transition-colors" />
@@ -495,7 +479,7 @@ const App: React.FC = () => {
            </div>
         </header>
 
-        {/* Content Scroll Area */}
+        {/* 内容滚动区域 */}
         <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-8 scroll-smooth">
             {error ? (
                 <div className="flex flex-col items-center justify-center h-64 text-center">

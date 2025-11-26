@@ -11,7 +11,7 @@ const PlatformSelector: React.FC<PlatformSelectorProps> = ({ platforms, selected
   const containerRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLButtonElement>(null);
 
-  // Auto-scroll to selected item
+  // 自动滚动到选中的项目
   useEffect(() => {
     if (activeRef.current && containerRef.current) {
       const container = containerRef.current;
@@ -20,7 +20,7 @@ const PlatformSelector: React.FC<PlatformSelectorProps> = ({ platforms, selected
       const containerRect = container.getBoundingClientRect();
       const activeRect = active.getBoundingClientRect();
 
-      // Calculate center position
+      // 计算中心位置
       const scrollLeft = active.offsetLeft - (containerRect.width / 2) + (activeRect.width / 2);
       
       container.scrollTo({

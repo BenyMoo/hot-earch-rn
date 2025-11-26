@@ -10,7 +10,7 @@ interface HotItemCardProps {
 const HotItemCard: React.FC<HotItemCardProps> = ({ item, rank }) => {
   
   const handlePress = () => {
-    // Prefer mobile URL if available and screen is small, otherwise standard URL
+    // 优先使用移动端链接（如果存在且屏幕较小），否则使用标准链接
     const targetUrl = (window.innerWidth < 768 && item.mobil_url) ? item.mobil_url : item.url;
     window.open(targetUrl, '_blank');
   };
@@ -29,12 +29,12 @@ const HotItemCard: React.FC<HotItemCardProps> = ({ item, rank }) => {
       onClick={handlePress}
       className="group bg-white rounded-xl p-4 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer active:scale-[0.99] flex items-start gap-3 relative overflow-hidden"
     >
-      {/* Rank Badge */}
+      {/* 排名徽标 */}
       <div className={`flex items-center justify-center w-8 h-8 rounded-lg text-sm font-bold shrink-0 shadow-sm transition-colors ${getRankStyle(rank)}`}>
         {rank}
       </div>
 
-      {/* Content */}
+      {/* 内容区域 */}
       <div className="flex-1 min-w-0">
         <h3 className="text-gray-800 font-medium text-[15px] leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
           {item.title}
